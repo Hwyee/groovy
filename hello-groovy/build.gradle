@@ -21,3 +21,40 @@ dependencies {
 test {
     useJUnitPlatform()
 }
+
+def map = new HashMap()
+map.put("action",{println "action behave"})
+task(map,"demotask") {
+    //任务的配置阶段执行
+    println '示例:demo task'
+    //任务的行为:任务的执行阶段执行
+    doFirst {
+        println("demo task doFrist")
+    }
+    doLast {
+        println "demo task doLast"
+    }
+}
+//外部定义doFirst和doLast行为
+demotask.doFirst {
+    println("demo task doFrist out")
+}
+demotask.doFirst {
+    println("demo task doFrist out")
+}
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+//任务依赖
+tasks.register('A') {
+    println "task.A...."
+}
+
+task B {
+    println "task.B...."
+}
+
+task C(dependsOn: ['A','B']) {
+    println("task.C....")
+}

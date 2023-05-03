@@ -1,3 +1,6 @@
 rootProject.name = 'groovy'
+//include其实是一个方法,省略了小括号
+//include('hello-groovy')
 include 'hello-groovy'
-
+//子工程还可以再包含子工程,用冒号隔开
+//include 'hello-groovy:sub-hello-groovy'
