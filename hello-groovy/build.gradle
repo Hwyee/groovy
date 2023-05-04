@@ -42,7 +42,7 @@ demotask.doFirst {
 demotask.doFirst {
     println("demo task doFrist out")
 }
-tasks.withType(JavaCompile) {
+tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
 }
 
