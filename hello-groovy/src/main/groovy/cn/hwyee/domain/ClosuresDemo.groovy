@@ -18,7 +18,17 @@ Closure callback = { println 'Done!' }
 Closure<Boolean> isTextFile = {
     File it -> it.name.endsWith('.txt')
 }
-
+/**
+ * 启动失败：
+ G:\devData\github\groovy\hello-groovy\src\main\groovy\cn\hwyee\domain\ClosuresDemo.groovy：
+ 21: Invalid duplicate class definition of class cn.hwyee.domain.ClosuresDemo :
+ 源 G:\devData\github\groovy\hello-groovy\src\maingroovy\cn\hwyee\domain\ClosuresDemo.groovy 包含至少两个
+ cn.hwyee.domain.ClosuresDemo 类的定义。
+ 其中一个是使用 class 语句显式生成的类，另一个是根据文件名从脚本正文生成的类。解决办法是更改文件名或更改类名。
+ */
+//class ClosuresDemo{
+//
+//}
 /************************闭包的调用***************************************/
 def code = { 123 };
 assert code() == 123;
