@@ -1,0 +1,124 @@
+buildscript {
+    ext {
+        springBootVersion = "2.3.3.RELEASE"
+    }
+    repositories {
+        mavenLocal()
+        maven {
+            url 'https://maven.aliyun.com/repository/public/'
+        }
+    }
+    // 此处先引入插件
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    }
+}
+
+plugins {
+    id 'groovy'
+}
+apply plugin: 'groovy' //必须
+apply plugin: 'maven-publish'
+dependencies {
+    implementation gradleApi() //必须
+    implementation localGroovy() //必须
+}
+repositories {
+    google()
+    mavenCentral() //必须
+}
+//把项目入口设置为src/main/groovy
+sourceSets {
+    main {
+        groovy {
+            srcDir 'src/main/groovy'
+        }
+    }
+}
+
+group = 'cn.hwyee'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.apache.groovy:groovy:4.0.14'
+    testImplementation platform('org.junit:junit-bom:5.9.1')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    implementation('org.hibernate:hibernate-core:3.6.3.Final') {
+        //排除某一个库(slf4j)依赖:如下三种写法都行
+        exclude group: 'org.slf4j' exclude module: 'slf4j-api' exclude group: 'org.slf4j', module: 'slf4j-api'
+    }
+    //排除之后,使用手动的引入即可。
+    implementation 'org.slf4j:slf4j-api:1.4.0'
+}
+
+dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+    implementation('org.hibernate:hibernate-core:3.6.3.Final') {
+        //不允许依赖传递，一般不用
+        transitive(false)
+    }
+    //排除之后,使用手动的引入即可
+    implementation 'org.slf4j:slf4j-api:1.4.0'
+}
+
+//下面我们配置，当 Gradle 构建遇到依赖冲突时，就立即构建失败
+//configurations.all() {
+//    Configuration configuration ->
+//        //当遇到版本冲突时直接构建失败
+//        configuration.resolutionStrategy.failOnVersionConflict()
+//}
+
+dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+    implementation('org.hibernate:hibernate-core:3.6.3.Final')
+    //1.强制使用某个版本!!【官方建议使用这种方式】
+    implementation('org.slf4j:slf4j-api:1.4.0!!')
+    //2.这种效果和上面那种一样,强制指定某个版本
+    implementation('org.slf4j:slf4j-api:1.4.0') {
+        version {
+            strictly("1.4.0")
+        }
+    }
+}
+
+
+//再应用插件
+//apply plugin: 'org.springframework.boot' //社区插件,需要事先引入，不必写版本号
+
+//如果是第三方插件已经被托管在 https://plugins.gradle.org/ 网站上，就可以不用在 buildscript 里配置 classpath
+//plugins {
+//    id 'org.springframework.boot' version '2.4.1'
+//}
+
+
+//自定义插件 参考地址：https://docs.gradle.org/current/userguide/custom_plugins.html
+interface GreetingPluginExtension {
+    Property<String> getMessage()
+
+    Property<String> getGreeter()
+}
+
+class GreetingPlugin implements Plugin<Project> {
+    void apply(Project project) {
+        def extension = project.extensions.create('greeting', GreetingPluginExtension)
+        project.task('hello') {
+            doLast {
+                println "${extension.message.get()} from ${extension.greeter.get()}"
+            }
+        }
+    }
+}
+
+apply plugin: GreetingPlugin
+// Configure the extension using a DSL block
+greeting {
+    message = 'Hi'
+    greeter = 'Gradle'
+}
+

@@ -1,7 +1,19 @@
+buildscript {
+    repositories {
+        maven {
+            url "$rootDir/lib/release"
+        }
+    }
+    dependencies {
+        classpath "cn.hwyee.plugin:library:1.1"
+    }
+}
 plugins {
     id 'groovy'
 }
-
+//需要先发布hello-groovy再引入cn.hwyee.plugin2，否则报错
+//apply plugin: 'cn.hwyee.plugin2'
+apply plugin: 'cn.hwyee.plugin'
 group = 'cn.hwyee'
 version = '1.0-SNAPSHOT'
 
@@ -20,4 +32,20 @@ dependencies {
 
 test {
     useJUnitPlatform()
+}
+
+//乱码
+//指定使用什么版本的JDK语法编译源代码,跟编译环境有关,在有java插件时才能用
+sourceCompatibility = 1.8
+//指定生成特定于某个JDK版本的class文件:跟运行环境有关,在有java插件时才能用
+targetCompatibility = 1.8
+//业务编码字符集,注意这是指定源码解码的字符集[编译器]
+compileJava.options.encoding "UTF-8"
+//测试编码字符集,注意这是指定源码解码的字符集[编译器]
+compileTestJava.options.encoding "UTF-8"
+//编译JAVA文件时采用UTF-8:注意这是指定源码编码的字符集【源文件】
+tasks.withType(JavaCompile) { options.encoding = "UTF-8"
+}
+//编译JAVA文件时采用UTF-8:注意这是指定文档编码的字符集【源文件】
+tasks.withType(Javadoc) { options.encoding = "UTF-8"
 }
