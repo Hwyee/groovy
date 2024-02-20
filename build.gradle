@@ -3,20 +3,29 @@ buildscript {
         maven {
             url "$rootDir/lib/release"
         }
+        maven {
+            url 'https://maven.aliyun.com/repository/public'
+        }
     }
     dependencies {
         classpath "cn.hwyee.plugin:library:1.1"
+        //https://plugins.gradle.org/plugin/org.springframework.boot
+        classpath 'org.springframework.boot:spring-boot-gradle-plugin:3.2.2'
     }
 }
 plugins {
     id 'groovy'
+    //id "org.springframework.boot" version "3.2.2"
 }
 //需要先发布hello-groovy再引入cn.hwyee.plugin2，否则报错
 //apply plugin: 'cn.hwyee.plugin2'
 apply plugin: 'cn.hwyee.plugin'
 group = 'cn.hwyee'
 version = '1.0-SNAPSHOT'
-
+//有了它org.springframework.boot:spring-boot-gradle-plugin:2.4.1，下面两个插件就不用指定版本号了
+apply plugin: 'org.springframework.boot'
+//有了这个插件，引入spring依赖就不用指定版本号了
+apply plugin: 'io.spring.dependency-management'
 repositories {
     mavenCentral()
 }
@@ -44,8 +53,10 @@ compileJava.options.encoding "UTF-8"
 //测试编码字符集,注意这是指定源码解码的字符集[编译器]
 compileTestJava.options.encoding "UTF-8"
 //编译JAVA文件时采用UTF-8:注意这是指定源码编码的字符集【源文件】
-tasks.withType(JavaCompile) { options.encoding = "UTF-8"
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
 }
 //编译JAVA文件时采用UTF-8:注意这是指定文档编码的字符集【源文件】
-tasks.withType(Javadoc) { options.encoding = "UTF-8"
+tasks.withType(Javadoc) {
+    options.encoding = "UTF-8"
 }
